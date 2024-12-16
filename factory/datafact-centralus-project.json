@@ -1,0 +1,9 @@
+{
+	"name": "datafact-centralus-project",
+	"location": "centralus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "88bd7771-3b5c-4bff-885c-a27ff24bbfb8",
+		"tenantId": "443a5c43-3bdd-44ce-beba-60ad86c7c2b3"
+	}
+}
