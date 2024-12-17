@@ -1,0 +1,36 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "datafact-centralus-project"
+		},
+		"AzureSynapseAnalytics_target_password": {
+			"value": ""
+		},
+		"ADLS_CUSTOMER_DATA_properties_typeProperties_url": {
+			"value": "https://airbnbadlsaccount.dfs.core.windows.net/"
+		},
+		"AzureSynapseAnalytics_target_properties_typeProperties_server": {
+			"value": "synaspe-northeurope-projects.sql.azuresynapse.net"
+		},
+		"AzureSynapseAnalytics_target_properties_typeProperties_database": {
+			"value": "sqlpoolairbnb"
+		},
+		"AzureSynapseAnalytics_target_properties_typeProperties_userName": {
+			"value": "sqladminuser"
+		},
+		"cosmos_db_bookingdata_properties_typeProperties_accountEndpoint": {
+			"value": "https://cosmosdb-centralus-project.documents.azure.com:443/"
+		},
+		"cosmos_db_bookingdata_properties_typeProperties_database": {
+			"value": "Airbnbbookindata"
+		},
+		"containerUri": {
+			"value": ""
+		},
+		"containerSasToken": {
+			"value": ""
+		}
+	}
+}
