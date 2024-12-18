@@ -11,9 +11,21 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'AzureSynapseAnalytics_target'"
 		},
+		"CosmosDbNoSql_sample_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'CosmosDbNoSql_sample'"
+		},
 		"ADLS_CUSTOMER_DATA_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://airbnbadlsaccount.dfs.core.windows.net/"
+		},
+		"AzureSynapseAnalytics1_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "synaspe-northeurope-projects.sql.azuresynapse.net"
+		},
+		"AzureSynapseAnalytics1_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "sqlpoolairbnb"
 		},
 		"AzureSynapseAnalytics_target_properties_typeProperties_server": {
 			"type": "string",
@@ -60,13 +72,21 @@
 						"userProperties": [],
 						"typeProperties": {
 							"dataset": {
-								"referenceName": "customer_dim_synapse",
+								"referenceName": "customer_data_ADLS",
 								"type": "DatasetReference",
 								"parameters": {}
 							},
 							"fieldList": [
-								"exists"
-							]
+								"childItems"
+							],
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							},
+							"formatSettings": {
+								"type": "DelimitedTextReadSettings"
+							}
 						}
 					}
 				],
@@ -76,7 +96,7 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/customer_dim_synapse')]"
+				"[concat(variables('factoryId'), '/datasets/customer_data_ADLS')]"
 			]
 		},
 		{
@@ -364,6 +384,101 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/ADLS_CUSTOMER_DATA')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSynapseAnalyticsTable1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSynapseAnalytics1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlDWTable",
+				"schema": [
+					{
+						"name": "booking_id",
+						"type": "nvarchar"
+					},
+					{
+						"name": "property_id",
+						"type": "nvarchar"
+					},
+					{
+						"name": "customer_id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "owner_id",
+						"type": "nvarchar"
+					},
+					{
+						"name": "check_in_date",
+						"type": "date"
+					},
+					{
+						"name": "check_out_date",
+						"type": "date"
+					},
+					{
+						"name": "booking_date",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "amount",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "currency",
+						"type": "nvarchar"
+					},
+					{
+						"name": "city",
+						"type": "nvarchar"
+					},
+					{
+						"name": "country",
+						"type": "nvarchar"
+					},
+					{
+						"name": "full_address",
+						"type": "nvarchar"
+					},
+					{
+						"name": "stay_duration",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "booking_year",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "booking_month",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "timestamp",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					}
+				],
+				"typeProperties": {
+					"schema": "airbnb",
+					"table": "bookings_fact"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSynapseAnalytics1')]"
 			]
 		},
 		{
@@ -733,6 +848,23 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/AzureSynapseAnalytics1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDW",
+				"typeProperties": {
+					"server": "[parameters('AzureSynapseAnalytics1_properties_typeProperties_server')]",
+					"database": "[parameters('AzureSynapseAnalytics1_properties_typeProperties_database')]",
+					"encrypt": "mandatory",
+					"trustServerCertificate": true,
+					"authenticationType": "SystemAssignedManagedIdentity"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/AzureSynapseAnalytics_target')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -755,6 +887,19 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/CosmosDbNoSql_sample')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "CosmosDb",
+				"typeProperties": {
+					"connectionString": "[parameters('CosmosDbNoSql_sample_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/cosmos_db_bookingdata')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -767,6 +912,189 @@
 				}
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/dataflow_booking_data')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "CosmosDb_booking_fact",
+								"type": "DatasetReference"
+							},
+							"name": "bookingdatacosmos"
+						},
+						{
+							"dataset": {
+								"referenceName": "AzureSynapseAnalyticsTable1",
+								"type": "DatasetReference"
+							},
+							"name": "source2"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "AzureSynapseAnalyticsTable1",
+								"type": "DatasetReference"
+							},
+							"name": "Target",
+							"rejectedDataLinkedService": {
+								"referenceName": "ADLS_CUSTOMER_DATA",
+								"type": "LinkedServiceReference"
+							}
+						}
+					],
+					"transformations": [
+						{
+							"name": "split"
+						},
+						{
+							"name": "derivedColumn1"
+						},
+						{
+							"name": "lookup"
+						},
+						{
+							"name": "alterRow"
+						},
+						{
+							"name": "select"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          check_out_date as date,",
+						"          customer_id as short,",
+						"          timestamp as timestamp,",
+						"          owner_id as string,",
+						"          check_in_date as date,",
+						"          property_id as string,",
+						"          amount as double,",
+						"          booking_id as string,",
+						"          currency as string,",
+						"          property_location as (city as string, country as string),",
+						"          booking_date as timestamp",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     enableChangeFeed: true,",
+						"     changeFeedStartFromTheBeginning: true,",
+						"     format: 'document',",
+						"     systemColumns: false) ~> bookingdatacosmos",
+						"source(output(",
+						"          booking_id as string,",
+						"          property_id as string,",
+						"          customer_id as integer,",
+						"          owner_id as string,",
+						"          check_in_date as date,",
+						"          check_out_date as date,",
+						"          booking_date as timestamp,",
+						"          amount as double,",
+						"          currency as string,",
+						"          city as string,",
+						"          country as string,",
+						"          full_address as string,",
+						"          stay_duration as long,",
+						"          booking_year as integer,",
+						"          booking_month as integer,",
+						"          timestamp as timestamp",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     isolationLevel: 'READ_UNCOMMITTED',",
+						"     format: 'table',",
+						"     staged: true) ~> source2",
+						"bookingdatacosmos split(check_out_date<check_in_date,",
+						"     check_out_date>check_in_date,",
+						"     disjoint: true) ~> split@(badrecordes, goodrecordes)",
+						"split@goodrecordes derive(check_out_date = check_out_date,",
+						"          customer_id = customer_id,",
+						"          timestamp = timestamp,",
+						"          owner_id = owner_id,",
+						"          check_in_date = check_in_date,",
+						"          property_id = property_id,",
+						"          amount = amount,",
+						"          booking_id = booking_id,",
+						"          currency = currency,",
+						"          booking_date = booking_date,",
+						"          city = property_location.city,",
+						"          country = property_location.country,",
+						"          full_address = concat(property_location.city, ',' , property_location.country),",
+						"          stay_duration = check_out_date - check_in_date,",
+						"          booking_year = year(booking_date),",
+						"          booking_month = month(booking_date)) ~> derivedColumn1",
+						"derivedColumn1, source2 lookup(derivedColumn1@booking_id == source2@booking_id,",
+						"     multiple: false,",
+						"     pickup: 'first',",
+						"     desc(source2@timestamp, false),",
+						"     broadcast: 'auto')~> lookup",
+						"lookup alterRow(insertIf(isNull(source2@booking_id)),",
+						"     updateIf(not(isNull(source2@booking_id)))) ~> alterRow",
+						"alterRow select(mapColumn(",
+						"          check_out_date = derivedColumn1@check_out_date,",
+						"          customer_id = derivedColumn1@customer_id,",
+						"          timestamp = derivedColumn1@timestamp,",
+						"          owner_id = derivedColumn1@owner_id,",
+						"          check_in_date = derivedColumn1@check_in_date,",
+						"          property_id = derivedColumn1@property_id,",
+						"          amount = derivedColumn1@amount,",
+						"          booking_id = derivedColumn1@booking_id,",
+						"          currency = derivedColumn1@currency,",
+						"          booking_date = derivedColumn1@booking_date,",
+						"          city = derivedColumn1@city,",
+						"          country = derivedColumn1@country,",
+						"          full_address = derivedColumn1@full_address,",
+						"          stay_duration = derivedColumn1@stay_duration,",
+						"          booking_year = derivedColumn1@booking_year,",
+						"          booking_month = derivedColumn1@booking_month",
+						"     ),",
+						"     skipDuplicateMapInputs: false,",
+						"     skipDuplicateMapOutputs: false) ~> select",
+						"select sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          booking_id as string,",
+						"          property_id as string,",
+						"          customer_id as integer,",
+						"          owner_id as string,",
+						"          check_in_date as date,",
+						"          check_out_date as date,",
+						"          booking_date as timestamp,",
+						"          amount as double,",
+						"          currency as string,",
+						"          city as string,",
+						"          country as string,",
+						"          full_address as string,",
+						"          stay_duration as long,",
+						"          booking_year as integer,",
+						"          booking_month as integer,",
+						"          timestamp as timestamp",
+						"     ),",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:true,",
+						"     upsertable:true,",
+						"     keys:['booking_id'],",
+						"     format: 'table',",
+						"     staged: true,",
+						"     allowCopyCommand: true,",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError',",
+						"     outputRejectedData: true) ~> Target"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/CosmosDb_booking_fact')]",
+				"[concat(variables('factoryId'), '/datasets/AzureSynapseAnalyticsTable1')]",
+				"[concat(variables('factoryId'), '/linkedServices/ADLS_CUSTOMER_DATA')]"
+			]
 		}
 	]
 }
