@@ -13,13 +13,25 @@
 				},
 				{
 					"dataset": {
-						"referenceName": "booking_fact_synapse",
+						"referenceName": "AzureSynapseAnalyticsTable1",
 						"type": "DatasetReference"
 					},
 					"name": "source2"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "AzureSynapseAnalyticsTable1",
+						"type": "DatasetReference"
+					},
+					"name": "Target",
+					"rejectedDataLinkedService": {
+						"referenceName": "ADLS_CUSTOMER_DATA",
+						"type": "LinkedServiceReference"
+					}
+				}
+			],
 			"transformations": [
 				{
 					"name": "split"
@@ -29,6 +41,12 @@
 				},
 				{
 					"name": "lookup"
+				},
+				{
+					"name": "alterRow"
+				},
+				{
+					"name": "select"
 				}
 			],
 			"scriptLines": [
@@ -93,11 +111,65 @@
 				"          stay_duration = check_out_date - check_in_date,",
 				"          booking_year = year(booking_date),",
 				"          booking_month = month(booking_date)) ~> derivedColumn1",
-				"derivedColumn1, source2 lookup(ERROR_FUNCTION('') == ERROR_FUNCTION(''),",
+				"derivedColumn1, source2 lookup(derivedColumn1@booking_id == source2@booking_id,",
 				"     multiple: false,",
 				"     pickup: 'first',",
-				"     asc(ERROR_FUNCTION(''), true),",
-				"     broadcast: 'auto')~> lookup"
+				"     desc(source2@booking_date, false),",
+				"     broadcast: 'auto')~> lookup",
+				"lookup alterRow(insertIf(isNull(source2@booking_id)),",
+				"     updateIf(not(isNull(source2@booking_id)))) ~> alterRow",
+				"alterRow select(mapColumn(",
+				"          check_out_date = derivedColumn1@check_out_date,",
+				"          customer_id = derivedColumn1@customer_id,",
+				"          timestamp = derivedColumn1@timestamp,",
+				"          owner_id = derivedColumn1@owner_id,",
+				"          check_in_date = derivedColumn1@check_in_date,",
+				"          property_id = derivedColumn1@property_id,",
+				"          amount = derivedColumn1@amount,",
+				"          booking_id = derivedColumn1@booking_id,",
+				"          currency = derivedColumn1@currency,",
+				"          booking_date = derivedColumn1@booking_date,",
+				"          city = derivedColumn1@city,",
+				"          country = derivedColumn1@country,",
+				"          full_address = derivedColumn1@full_address,",
+				"          stay_duration = derivedColumn1@stay_duration,",
+				"          booking_year = derivedColumn1@booking_year,",
+				"          booking_month = derivedColumn1@booking_month",
+				"     ),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> select",
+				"select sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          booking_id as string,",
+				"          property_id as string,",
+				"          customer_id as integer,",
+				"          owner_id as string,",
+				"          check_in_date as date,",
+				"          check_out_date as date,",
+				"          booking_date as timestamp,",
+				"          amount as double,",
+				"          currency as string,",
+				"          city as string,",
+				"          country as string,",
+				"          full_address as string,",
+				"          stay_duration as long,",
+				"          booking_year as integer,",
+				"          booking_month as integer,",
+				"          timestamp as timestamp",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:true,",
+				"     upsertable:true,",
+				"     keys:['booking_id'],",
+				"     format: 'table',",
+				"     staged: true,",
+				"     allowCopyCommand: true,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     outputRejectedData: true) ~> Target"
 			]
 		}
 	}
