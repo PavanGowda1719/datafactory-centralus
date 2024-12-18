@@ -16,12 +16,19 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
-						"referenceName": "customer_dim_synapse",
+						"referenceName": "customer_data_ADLS",
 						"type": "DatasetReference"
 					},
 					"fieldList": [
-						"exists"
-					]
+						"childItems"
+					],
+					"storeSettings": {
+						"type": "AzureBlobFSReadSettings",
+						"enablePartitionDiscovery": false
+					},
+					"formatSettings": {
+						"type": "DelimitedTextReadSettings"
+					}
 				}
 			}
 		],
