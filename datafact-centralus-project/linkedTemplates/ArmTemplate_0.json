@@ -1180,6 +1180,64 @@
 				"[concat(variables('factoryId'), '/linkedServices/ADLS_CUSTOMER_DATA')]",
 				"[concat(variables('factoryId'), '/linkedServices/AzureSynapseAnalytics_target')]"
 			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pipeline3_main_Airbnb')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "customer_data",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "pipeline1_customerdata",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "booking_data",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "customer_data",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "pipeline2_booking_data",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/pipeline1_customerdata')]",
+				"[concat(variables('factoryId'), '/pipelines/pipeline2_booking_data')]"
+			]
 		}
 	]
 }
