@@ -13,23 +13,19 @@
 				},
 				{
 					"dataset": {
-						"referenceName": "AzureSynapseAnalyticsTable1",
+						"referenceName": "booking_fact_synapse",
 						"type": "DatasetReference"
 					},
-					"name": "source2"
+					"name": "sourcebookingdata"
 				}
 			],
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "AzureSynapseAnalyticsTable1",
+						"referenceName": "booking_fact_synapse",
 						"type": "DatasetReference"
 					},
-					"name": "Target",
-					"rejectedDataLinkedService": {
-						"referenceName": "ADLS_CUSTOMER_DATA",
-						"type": "LinkedServiceReference"
-					}
+					"name": "Target"
 				}
 			],
 			"transformations": [
@@ -91,7 +87,7 @@
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
 				"     format: 'table',",
-				"     staged: true) ~> source2",
+				"     staged: true) ~> sourcebookingdata",
 				"bookingdatacosmos split(check_out_date<check_in_date,",
 				"     check_out_date>check_in_date,",
 				"     disjoint: true) ~> split@(badrecordes, goodrecordes)",
@@ -111,13 +107,13 @@
 				"          stay_duration = check_out_date - check_in_date,",
 				"          booking_year = year(booking_date),",
 				"          booking_month = month(booking_date)) ~> derivedColumn1",
-				"derivedColumn1, source2 lookup(derivedColumn1@booking_id == source2@booking_id,",
+				"derivedColumn1, sourcebookingdata lookup(derivedColumn1@booking_id == sourcebookingdata@booking_id,",
 				"     multiple: false,",
 				"     pickup: 'first',",
-				"     desc(source2@timestamp, false),",
+				"     desc(sourcebookingdata@timestamp, false),",
 				"     broadcast: 'auto')~> lookup",
-				"lookup alterRow(insertIf(isNull(source2@booking_id)),",
-				"     updateIf(not(isNull(source2@booking_id)))) ~> alterRow",
+				"lookup alterRow(insertIf(isNull(sourcebookingdata@booking_id)),",
+				"     updateIf(not(isNull(sourcebookingdata@booking_id)))) ~> alterRow",
 				"alterRow select(mapColumn(",
 				"          check_out_date = derivedColumn1@check_out_date,",
 				"          customer_id = derivedColumn1@customer_id,",
