@@ -359,6 +359,91 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/pipeline2_booking_data')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Dataflow_booking_data",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "dataflow_booking_data",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"bookingdatacosmos": {},
+									"source2": {},
+									"Target": {}
+								}
+							},
+							"staging": {
+								"linkedService": {
+									"referenceName": "ADLS_CUSTOMER_DATA",
+									"type": "LinkedServiceReference"
+								},
+								"folderPath": "airbnb/LOG_delete_file"
+							},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine",
+							"continuationSettings": {
+								"customizedCheckpointKey": "b8c41a14-f29d-4f12-976d-21c0e77efe8f"
+							}
+						}
+					},
+					{
+						"name": "Stored procedure",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "Dataflow_booking_data",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[airbnb].[BookingAggregation]"
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureSynapseAnalytics_target",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/dataflow_booking_data')]",
+				"[concat(variables('factoryId'), '/linkedServices/ADLS_CUSTOMER_DATA')]",
+				"[concat(variables('factoryId'), '/linkedServices/AzureSynapseAnalytics_target')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/Archive_data_ADLS')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
