@@ -7,6 +7,10 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "datafact-centralus-project"
 		},
+		"AzureSynapseAnalytics_final_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'AzureSynapseAnalytics_final'"
+		},
 		"AzureSynapseAnalytics_target_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'AzureSynapseAnalytics_target'"
@@ -26,6 +30,18 @@
 		"AzureSynapseAnalytics1_properties_typeProperties_database": {
 			"type": "string",
 			"defaultValue": "sqlpoolairbnb"
+		},
+		"AzureSynapseAnalytics_final_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "synaspe-northeurope-projects.sql.azuresynapse.net"
+		},
+		"AzureSynapseAnalytics_final_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "sqlpoolairbnb"
+		},
+		"AzureSynapseAnalytics_final_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "sqladminuser"
 		},
 		"AzureSynapseAnalytics_target_properties_typeProperties_server": {
 			"type": "string",
@@ -690,6 +706,101 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/bookindata')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSynapseAnalytics_final",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlDWTable",
+				"schema": [
+					{
+						"name": "booking_id",
+						"type": "nvarchar"
+					},
+					{
+						"name": "property_id",
+						"type": "nvarchar"
+					},
+					{
+						"name": "customer_id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "owner_id",
+						"type": "nvarchar"
+					},
+					{
+						"name": "check_in_date",
+						"type": "date"
+					},
+					{
+						"name": "check_out_date",
+						"type": "date"
+					},
+					{
+						"name": "booking_date",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "amount",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "currency",
+						"type": "nvarchar"
+					},
+					{
+						"name": "city",
+						"type": "nvarchar"
+					},
+					{
+						"name": "country",
+						"type": "nvarchar"
+					},
+					{
+						"name": "full_address",
+						"type": "nvarchar"
+					},
+					{
+						"name": "stay_duration",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "booking_year",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "booking_month",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "timestamp",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					}
+				],
+				"typeProperties": {
+					"schema": "airbnb",
+					"table": "bookings_fact"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSynapseAnalytics_final')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/booking_fact_synapse')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -1008,6 +1119,28 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/AzureSynapseAnalytics_final')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDW",
+				"typeProperties": {
+					"server": "[parameters('AzureSynapseAnalytics_final_properties_typeProperties_server')]",
+					"database": "[parameters('AzureSynapseAnalytics_final_properties_typeProperties_database')]",
+					"encrypt": "mandatory",
+					"trustServerCertificate": true,
+					"authenticationType": "SQL",
+					"userName": "[parameters('AzureSynapseAnalytics_final_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('AzureSynapseAnalytics_final_password')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/AzureSynapseAnalytics_target')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -1221,7 +1354,7 @@
 						"     deletable:false,",
 						"     insertable:true,",
 						"     updateable:true,",
-						"     upsertable:true,",
+						"     upsertable:false,",
 						"     keys:['booking_id'],",
 						"     format: 'table',",
 						"     staged: true,",
