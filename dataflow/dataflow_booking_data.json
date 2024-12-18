@@ -10,6 +10,13 @@
 						"type": "DatasetReference"
 					},
 					"name": "bookingdatacosmos"
+				},
+				{
+					"dataset": {
+						"referenceName": "booking_fact_synapse",
+						"type": "DatasetReference"
+					},
+					"name": "source2"
 				}
 			],
 			"sinks": [],
@@ -19,6 +26,9 @@
 				},
 				{
 					"name": "derivedColumn1"
+				},
+				{
+					"name": "lookup"
 				}
 			],
 			"scriptLines": [
@@ -41,6 +51,29 @@
 				"     changeFeedStartFromTheBeginning: true,",
 				"     format: 'document',",
 				"     systemColumns: false) ~> bookingdatacosmos",
+				"source(output(",
+				"          booking_id as string,",
+				"          property_id as string,",
+				"          customer_id as integer,",
+				"          owner_id as string,",
+				"          check_in_date as date,",
+				"          check_out_date as date,",
+				"          booking_date as timestamp,",
+				"          amount as double,",
+				"          currency as string,",
+				"          city as string,",
+				"          country as string,",
+				"          full_address as string,",
+				"          stay_duration as long,",
+				"          booking_year as integer,",
+				"          booking_month as integer,",
+				"          timestamp as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table',",
+				"     staged: true) ~> source2",
 				"bookingdatacosmos split(check_out_date<check_in_date,",
 				"     check_out_date>check_in_date,",
 				"     disjoint: true) ~> split@(badrecordes, goodrecordes)",
@@ -59,7 +92,12 @@
 				"          full_address = concat(property_location.city, ',' , property_location.country),",
 				"          stay_duration = check_out_date - check_in_date,",
 				"          booking_year = year(booking_date),",
-				"          booking_month = month(booking_date)) ~> derivedColumn1"
+				"          booking_month = month(booking_date)) ~> derivedColumn1",
+				"derivedColumn1, source2 lookup(ERROR_FUNCTION('') == ERROR_FUNCTION(''),",
+				"     multiple: false,",
+				"     pickup: 'first',",
+				"     asc(ERROR_FUNCTION(''), true),",
+				"     broadcast: 'auto')~> lookup"
 			]
 		}
 	}
