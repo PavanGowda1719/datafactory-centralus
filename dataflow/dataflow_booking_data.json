@@ -161,7 +161,7 @@
 				"     deletable:false,",
 				"     insertable:true,",
 				"     updateable:true,",
-				"     upsertable:true,",
+				"     upsertable:false,",
 				"     keys:['booking_id'],",
 				"     format: 'table',",
 				"     staged: true,",
