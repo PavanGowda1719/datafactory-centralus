@@ -16,6 +16,9 @@
 			"transformations": [
 				{
 					"name": "split"
+				},
+				{
+					"name": "derivedColumn1"
 				}
 			],
 			"scriptLines": [
@@ -40,7 +43,23 @@
 				"     systemColumns: false) ~> bookingdatacosmos",
 				"bookingdatacosmos split(check_out_date<check_in_date,",
 				"     check_out_date>check_in_date,",
-				"     disjoint: true) ~> split@(badrecordes, goodrecordes)"
+				"     disjoint: true) ~> split@(badrecordes, goodrecordes)",
+				"split@goodrecordes derive(check_out_date = check_out_date,",
+				"          customer_id = customer_id,",
+				"          timestamp = timestamp,",
+				"          owner_id = owner_id,",
+				"          check_in_date = check_in_date,",
+				"          property_id = property_id,",
+				"          amount = amount,",
+				"          booking_id = booking_id,",
+				"          currency = currency,",
+				"          booking_date = booking_date,",
+				"          city = property_location.city,",
+				"          country = property_location.country,",
+				"          full_address = concat(property_location.city, ',' , property_location.country),",
+				"          stay_duration = check_out_date - check_in_date,",
+				"          booking_year = year(booking_date),",
+				"          booking_month = month(booking_date)) ~> derivedColumn1"
 			]
 		}
 	}
