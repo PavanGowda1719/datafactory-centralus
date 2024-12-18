@@ -114,7 +114,7 @@
 				"derivedColumn1, source2 lookup(derivedColumn1@booking_id == source2@booking_id,",
 				"     multiple: false,",
 				"     pickup: 'first',",
-				"     desc(source2@booking_date, false),",
+				"     desc(source2@timestamp, false),",
 				"     broadcast: 'auto')~> lookup",
 				"lookup alterRow(insertIf(isNull(source2@booking_id)),",
 				"     updateIf(not(isNull(source2@booking_id)))) ~> alterRow",
