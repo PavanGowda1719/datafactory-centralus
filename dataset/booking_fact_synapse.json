@@ -2,7 +2,7 @@
 	"name": "booking_fact_synapse",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "AzureSynapseAnalytics_target",
+			"referenceName": "AzureSynapseAnalytics1",
 			"type": "LinkedServiceReference"
 		},
 		"annotations": [],
