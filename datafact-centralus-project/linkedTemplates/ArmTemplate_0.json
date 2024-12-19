@@ -957,7 +957,11 @@
 								"referenceName": "BOOKING_MI",
 								"type": "DatasetReference"
 							},
-							"name": "Target"
+							"name": "Target",
+							"rejectedDataLinkedService": {
+								"referenceName": "ADLS_CUSTOMER_DATA",
+								"type": "LinkedServiceReference"
+							}
 						}
 					],
 					"transformations": [
@@ -1103,7 +1107,8 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/CosmosDb_booking_fact')]",
-				"[concat(variables('factoryId'), '/datasets/BOOKING_MI')]"
+				"[concat(variables('factoryId'), '/datasets/BOOKING_MI')]",
+				"[concat(variables('factoryId'), '/linkedServices/ADLS_CUSTOMER_DATA')]"
 			]
 		},
 		{
@@ -1151,6 +1156,33 @@
 								"customizedCheckpointKey": "b8c41a14-f29d-4f12-976d-21c0e77efe8f"
 							}
 						}
+					},
+					{
+						"name": "Stored procedure",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "Dataflow_booking_data",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[airbnb].[BookingAggregation]"
+						},
+						"linkedServiceName": {
+							"referenceName": "SYNAPSE_MI",
+							"type": "LinkedServiceReference"
+						}
 					}
 				],
 				"policy": {
@@ -1160,7 +1192,8 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/dataflows/dataflow_booking_data')]",
-				"[concat(variables('factoryId'), '/linkedServices/ADLS_CUSTOMER_DATA')]"
+				"[concat(variables('factoryId'), '/linkedServices/ADLS_CUSTOMER_DATA')]",
+				"[concat(variables('factoryId'), '/linkedServices/SYNAPSE_MI')]"
 			]
 		},
 		{
