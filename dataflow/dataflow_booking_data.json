@@ -13,7 +13,7 @@
 				},
 				{
 					"dataset": {
-						"referenceName": "booking_fact_synapse",
+						"referenceName": "BOOKING_MI",
 						"type": "DatasetReference"
 					},
 					"name": "sourcebookingdata"
@@ -22,7 +22,7 @@
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "booking_fact_synapse",
+						"referenceName": "BOOKING_MI",
 						"type": "DatasetReference"
 					},
 					"name": "Target"
