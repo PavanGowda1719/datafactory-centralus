@@ -25,7 +25,11 @@
 						"referenceName": "BOOKING_MI",
 						"type": "DatasetReference"
 					},
-					"name": "Target"
+					"name": "Target",
+					"rejectedDataLinkedService": {
+						"referenceName": "ADLS_CUSTOMER_DATA",
+						"type": "LinkedServiceReference"
+					}
 				}
 			],
 			"transformations": [
