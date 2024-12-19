@@ -5,10 +5,7 @@
 		"factoryName": {
 			"value": "datafact-centralus-project"
 		},
-		"AzureSynapseAnalytics_final_password": {
-			"value": ""
-		},
-		"AzureSynapseAnalytics_target_password": {
+		"AzureSynapseAnalytics1_password": {
 			"value": ""
 		},
 		"CosmosDbNoSql_sample_connectionString": {
@@ -17,23 +14,20 @@
 		"ADLS_CUSTOMER_DATA_properties_typeProperties_url": {
 			"value": "https://airbnbadlsaccount.dfs.core.windows.net/"
 		},
-		"AzureSynapseAnalytics_final_properties_typeProperties_server": {
-			"value": "synaspe-northeurope-projects.sql.azuresynapse.net"
+		"AzureSynapseAnalytics1_properties_typeProperties_server": {
+			"value": "synase-central-us.sql.azuresynapse.net"
 		},
-		"AzureSynapseAnalytics_final_properties_typeProperties_database": {
-			"value": "sqlpoolairbnb"
+		"AzureSynapseAnalytics1_properties_typeProperties_database": {
+			"value": "sqltargettable"
 		},
-		"AzureSynapseAnalytics_final_properties_typeProperties_userName": {
-			"value": "sqladminuser"
+		"AzureSynapseAnalytics1_properties_typeProperties_userName": {
+			"value": "sqladminuser1"
 		},
-		"AzureSynapseAnalytics_target_properties_typeProperties_server": {
-			"value": "synaspe-northeurope-projects.sql.azuresynapse.net"
+		"SYNAPSE_MI_properties_typeProperties_server": {
+			"value": "synase-central-us.sql.azuresynapse.net"
 		},
-		"AzureSynapseAnalytics_target_properties_typeProperties_database": {
-			"value": "sqlpoolairbnb"
-		},
-		"AzureSynapseAnalytics_target_properties_typeProperties_userName": {
-			"value": "sqladminuser"
+		"SYNAPSE_MI_properties_typeProperties_database": {
+			"value": "sqltargettable"
 		},
 		"cosmos_db_bookingdata_properties_typeProperties_accountEndpoint": {
 			"value": "https://cosmosdb-centralus-project.documents.azure.com:443/"

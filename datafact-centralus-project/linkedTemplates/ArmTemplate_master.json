@@ -7,13 +7,9 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "datafact-centralus-project"
 		},
-		"AzureSynapseAnalytics_final_password": {
+		"AzureSynapseAnalytics1_password": {
 			"type": "secureString",
-			"metadata": "Secure string for 'password' of 'AzureSynapseAnalytics_final'"
-		},
-		"AzureSynapseAnalytics_target_password": {
-			"type": "secureString",
-			"metadata": "Secure string for 'password' of 'AzureSynapseAnalytics_target'"
+			"metadata": "Secure string for 'password' of 'AzureSynapseAnalytics1'"
 		},
 		"CosmosDbNoSql_sample_connectionString": {
 			"type": "secureString",
@@ -23,29 +19,25 @@
 			"type": "string",
 			"defaultValue": "https://airbnbadlsaccount.dfs.core.windows.net/"
 		},
-		"AzureSynapseAnalytics_final_properties_typeProperties_server": {
+		"AzureSynapseAnalytics1_properties_typeProperties_server": {
 			"type": "string",
-			"defaultValue": "synaspe-northeurope-projects.sql.azuresynapse.net"
+			"defaultValue": "synase-central-us.sql.azuresynapse.net"
 		},
-		"AzureSynapseAnalytics_final_properties_typeProperties_database": {
+		"AzureSynapseAnalytics1_properties_typeProperties_database": {
 			"type": "string",
-			"defaultValue": "sqlpoolairbnb"
+			"defaultValue": "sqltargettable"
 		},
-		"AzureSynapseAnalytics_final_properties_typeProperties_userName": {
+		"AzureSynapseAnalytics1_properties_typeProperties_userName": {
 			"type": "string",
-			"defaultValue": "sqladminuser"
+			"defaultValue": "sqladminuser1"
 		},
-		"AzureSynapseAnalytics_target_properties_typeProperties_server": {
+		"SYNAPSE_MI_properties_typeProperties_server": {
 			"type": "string",
-			"defaultValue": "synaspe-northeurope-projects.sql.azuresynapse.net"
+			"defaultValue": "synase-central-us.sql.azuresynapse.net"
 		},
-		"AzureSynapseAnalytics_target_properties_typeProperties_database": {
+		"SYNAPSE_MI_properties_typeProperties_database": {
 			"type": "string",
-			"defaultValue": "sqlpoolairbnb"
-		},
-		"AzureSynapseAnalytics_target_properties_typeProperties_userName": {
-			"type": "string",
-			"defaultValue": "sqladminuser"
+			"defaultValue": "sqltargettable"
 		},
 		"cosmos_db_bookingdata_properties_typeProperties_accountEndpoint": {
 			"type": "string",
@@ -82,11 +74,8 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
-					"AzureSynapseAnalytics_final_password": {
-						"value": "[parameters('AzureSynapseAnalytics_final_password')]"
-					},
-					"AzureSynapseAnalytics_target_password": {
-						"value": "[parameters('AzureSynapseAnalytics_target_password')]"
+					"AzureSynapseAnalytics1_password": {
+						"value": "[parameters('AzureSynapseAnalytics1_password')]"
 					},
 					"CosmosDbNoSql_sample_connectionString": {
 						"value": "[parameters('CosmosDbNoSql_sample_connectionString')]"
@@ -94,23 +83,20 @@
 					"ADLS_CUSTOMER_DATA_properties_typeProperties_url": {
 						"value": "[parameters('ADLS_CUSTOMER_DATA_properties_typeProperties_url')]"
 					},
-					"AzureSynapseAnalytics_final_properties_typeProperties_server": {
-						"value": "[parameters('AzureSynapseAnalytics_final_properties_typeProperties_server')]"
+					"AzureSynapseAnalytics1_properties_typeProperties_server": {
+						"value": "[parameters('AzureSynapseAnalytics1_properties_typeProperties_server')]"
 					},
-					"AzureSynapseAnalytics_final_properties_typeProperties_database": {
-						"value": "[parameters('AzureSynapseAnalytics_final_properties_typeProperties_database')]"
+					"AzureSynapseAnalytics1_properties_typeProperties_database": {
+						"value": "[parameters('AzureSynapseAnalytics1_properties_typeProperties_database')]"
 					},
-					"AzureSynapseAnalytics_final_properties_typeProperties_userName": {
-						"value": "[parameters('AzureSynapseAnalytics_final_properties_typeProperties_userName')]"
+					"AzureSynapseAnalytics1_properties_typeProperties_userName": {
+						"value": "[parameters('AzureSynapseAnalytics1_properties_typeProperties_userName')]"
 					},
-					"AzureSynapseAnalytics_target_properties_typeProperties_server": {
-						"value": "[parameters('AzureSynapseAnalytics_target_properties_typeProperties_server')]"
+					"SYNAPSE_MI_properties_typeProperties_server": {
+						"value": "[parameters('SYNAPSE_MI_properties_typeProperties_server')]"
 					},
-					"AzureSynapseAnalytics_target_properties_typeProperties_database": {
-						"value": "[parameters('AzureSynapseAnalytics_target_properties_typeProperties_database')]"
-					},
-					"AzureSynapseAnalytics_target_properties_typeProperties_userName": {
-						"value": "[parameters('AzureSynapseAnalytics_target_properties_typeProperties_userName')]"
+					"SYNAPSE_MI_properties_typeProperties_database": {
+						"value": "[parameters('SYNAPSE_MI_properties_typeProperties_database')]"
 					},
 					"cosmos_db_bookingdata_properties_typeProperties_accountEndpoint": {
 						"value": "[parameters('cosmos_db_bookingdata_properties_typeProperties_accountEndpoint')]"
