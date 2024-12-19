@@ -24,7 +24,7 @@
 							"referenceName": "ADLS_CUSTOMER_DATA",
 							"type": "LinkedServiceReference"
 						},
-						"folderPath": "airbnb/LOG_delete_file"
+						"folderPath": "airbnb/Checkpointing"
 					},
 					"compute": {
 						"coreCount": 16,
@@ -34,29 +34,6 @@
 					"continuationSettings": {
 						"customizedCheckpointKey": "b8c41a14-f29d-4f12-976d-21c0e77efe8f"
 					}
-				}
-			},
-			{
-				"name": "Stored procedure",
-				"type": "SqlServerStoredProcedure",
-				"dependsOn": [
-					{
-						"activity": "Dataflow_booking_data",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"storedProcedureName": "[airbnb].[BookingAggregation]"
 				}
 			}
 		],
