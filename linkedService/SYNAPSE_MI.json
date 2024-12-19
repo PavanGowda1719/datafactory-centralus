@@ -1,0 +1,14 @@
+{
+	"name": "SYNAPSE_MI",
+	"properties": {
+		"annotations": [],
+		"type": "AzureSqlDW",
+		"typeProperties": {
+			"server": "synase-central-us.sql.azuresynapse.net",
+			"database": "sqltargettable",
+			"encrypt": "mandatory",
+			"trustServerCertificate": true,
+			"authenticationType": "SystemAssignedManagedIdentity"
+		}
+	}
+}
